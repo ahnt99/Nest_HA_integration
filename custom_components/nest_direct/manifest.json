@@ -2,15 +2,15 @@
   "domain": "nest_direct",
   "name": "Nest Direct",
   "version": "1.0.0",
-  "documentation": "https://github.com/YOUR_GITHUB_USERNAME/nest_direct",
-  "issue_tracker": "https://github.com/YOUR_GITHUB_USERNAME/nest_direct/issues",
+  "documentation": "https://github.com/ahnt99/Nest_HA_integration",
+  "issue_tracker": "https://github.com/ahnt99/Nest_HA_integration/issues",
   "requirements": [
     "protobuf>=3.20.0",
     "aiohttp>=3.8.0"
   ],
   "dependencies": [],
   "codeowners": [
-    "@YOUR_GITHUB_USERNAME"
+    "ahnt99"
   ],
   "config_flow": true,
   "iot_class": "cloud_push"
