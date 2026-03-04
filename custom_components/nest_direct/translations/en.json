@@ -1,0 +1,20 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "To get your Access Token: log in at home.nest.com, then go to home.nest.com/session in the same browser. Copy the access_token value (a long string starting with 'b'). Do not log out of home.nest.com.",
+        "data": {
+          "access_token": "Access Token"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid or expired token. Make sure you have not logged out of home.nest.com.",
+      "cannot_connect": "Cannot connect to Nest servers",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "Nest Direct is already configured"
+    }
+  }
+}
