@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![HA Compatibility](https://img.shields.io/badge/HA-2023.3%2B-green)
 
-A Home Assistant custom integration providing **direct Nest API access** — no Works with Nest (deprecated), no SDM API, no Google Cloud project required. Uses the same undocumented API as the official Nest app.
+A Home Assistant custom integration providing **direct Nest API access**. Uses the same undocumented API as the official Nest app.
 
 > Converted and extended from the [homebridge-nest](https://github.com/chrisjshull/homebridge-nest) plugin by Adrian Cable.
 
