@@ -145,8 +145,3 @@ The climate entity supports:
 | Temperature changes not applying | Confirm the thermostat is not in Eco mode (eco overrides manual setpoints) |
 | Integration fails to load after update | Delete the entire `custom_components/nest_direct/` folder and re-extract the new version fresh |
 
----
-
-## License
-
-This project is open source. See [LICENSE](LICENSE) for details.
