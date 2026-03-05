@@ -48,6 +48,9 @@ You need a **Nest account** linked to your Nest devices. No developer account or
 1. Open HACS in your Home Assistant instance
 2. Go to **Integrations** → click the three-dot menu → **Custom Repositories**
 3. Add this repository URL and select **Integration** as the category
+    ```
+   https://github.com/ahnt99/Nest_HA_integration
+   ```
 4. Click **Add**
 5. Search for **Nest Direct** and click **Download**
 6. Restart Home Assistant
