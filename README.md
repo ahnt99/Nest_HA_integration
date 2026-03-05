@@ -54,7 +54,7 @@ You need a **Nest account** linked to your Nest devices. No developer account or
 
 ### Manual
 
-1. Download the latest release zip from the [Releases](../../releases) page
+1. Download the latest zip from the [link](https://github.com/ahnt99/Nest_HA_integration/archive/refs/heads/main.zip)
 2. Extract the `nest_direct` folder into your HA `config/custom_components/` directory:
 
 ```
