@@ -141,6 +141,9 @@ class NestEcoSwitch(_NestThermostatSwitch):
             extra={"heat_c": heat_c, "cool_c": cool_c},
         )
 
+FAN_DURATION_MINUTES = 15
+
+
 class NestFanSwitch(_NestThermostatSwitch):
     """Fan run switch for a Nest thermostat."""
 
@@ -155,12 +158,29 @@ class NestFanSwitch(_NestThermostatSwitch):
     def is_on(self) -> bool:
         return bool(self._device.get("fan_timer_active") or self._device.get("hvac_fan_state"))
 
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Show remaining fan timer minutes when active."""
+        import time
+        timeout = self._device.get("fan_timer_timeout", 0)
+        remaining = max(0, int((timeout - time.time()) / 60)) if timeout else 0
+        return {"timer_minutes_remaining": remaining} if remaining > 0 else {}
+
     async def async_turn_on(self, **kwargs: Any) -> None:
+        import time
+        timeout = int(time.time()) + FAN_DURATION_MINUTES * 60
         self._device["fan_timer_active"] = True
+        self._device["fan_timer_timeout"] = timeout
         self.async_write_ha_state()
-        await self._conn.update_property(f"device.{self._device_id}", "fan_timer_active", True)
+        await self._conn.update_property(
+            f"device.{self._device_id}", "fan_timer_active", True,
+            extra={"duration_minutes": FAN_DURATION_MINUTES},
+        )
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         self._device["fan_timer_active"] = False
+        self._device["fan_timer_timeout"] = 0
         self.async_write_ha_state()
-        await self._conn.update_property(f"device.{self._device_id}", "fan_timer_active", False)
+        await self._conn.update_property(
+            f"device.{self._device_id}", "fan_timer_active", False,
+        )

@@ -20,7 +20,6 @@ from .const import (
     API_PUSH_DEBOUNCE_SECONDS,
     API_RETRY_DELAY_SECONDS,
     API_TIMEOUT_SECONDS,
-    DEFAULT_FAN_DURATION_MINUTES,
     DEFAULT_HOT_WATER_DURATION_MINUTES,
     ENDPOINT_PUT,
     ENDPOINT_UPDATE,
@@ -680,8 +679,8 @@ class NestConnection:
 
         elif device_type == "device":
             if prop == "fan_timer_active":
-                await self._proto_write(encode_set_fan(resource_id, bool(value),
-                    self.config.get("fan_duration_minutes", DEFAULT_FAN_DURATION_MINUTES)))
+                duration = (extra or {}).get("duration_minutes", 15)
+                await self._proto_write(encode_set_fan(resource_id, bool(value), duration))
             elif prop == "eco":
                 eco_on = isinstance(value, dict) and value.get("mode") == "manual-eco"
                 await self._proto_write(encode_set_eco_mode(resource_id, eco_on))
