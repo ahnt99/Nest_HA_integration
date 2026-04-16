@@ -31,7 +31,7 @@ from .const import (
 from .protobuf_observer import ProtobufObserver
 from .protobuf_observer import (
     encode_set_hvac_mode, encode_set_eco_mode,
-    encode_set_temperature, encode_set_fan,
+    encode_set_temperature, encode_set_fan, encode_set_fan_timer,
 )
 
 POLL_INTERVAL_SECONDS = 30
@@ -680,7 +680,16 @@ class NestConnection:
         elif device_type == "device":
             if prop == "fan_timer_active":
                 duration = (extra or {}).get("duration_minutes", 15)
-                await self._proto_write(encode_set_fan(resource_id, bool(value), duration))
+                if bool(value):
+                    # Set timer duration first, then start the fan
+                    await self._proto_write(encode_set_fan_timer(resource_id, duration))
+                    await asyncio.sleep(0.2)
+                    await self._proto_write(encode_set_fan(resource_id, True))
+                else:
+                    # Clear timer then turn off fan
+                    await self._proto_write(encode_set_fan_timer(resource_id, 0))
+                    await asyncio.sleep(0.2)
+                    await self._proto_write(encode_set_fan(resource_id, False))
             elif prop == "eco":
                 eco_on = isinstance(value, dict) and value.get("mode") == "manual-eco"
                 await self._proto_write(encode_set_eco_mode(resource_id, eco_on))

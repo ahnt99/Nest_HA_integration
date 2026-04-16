@@ -1096,22 +1096,28 @@ def encode_set_temperature(resource_id: str,
         trait_bytes,
     )
 
-def encode_set_fan(resource_id: str, fan_on: bool, duration_minutes: int = 15) -> bytes:
-    """Encode FanControlTrait to turn fan on/off with a timer duration."""
+def encode_set_fan_timer(resource_id: str, duration_minutes: int) -> bytes:
+    """Encode FanControlSettingsTrait to set the fan timer duration.
+    field 8 = fanTimerTimeout: Int32_Indirect { field 1: unix_timestamp }
+    """
     import time as _time
-    # FanControlTrait:
-    #   field 1: current_speed (varint) — 1=STAGE1 (on), 4=OFF, 5=AUTO
-    #   field 2: fan_timer_speed (varint) — same values
-    #   field 3: fan_timer_timeout (Timestamp) — { field 1: seconds int64 }
-    speed = 1 if fan_on else 4
-    timeout_secs = int(_time.time()) + (duration_minutes * 60) if fan_on else 0
-    # Encode timeout as a Timestamp message: field 1 = seconds (int64/varint)
-    timeout_msg = _enc_varint_field(1, timeout_secs) if timeout_secs > 0 else b""
-    trait_bytes = (
-        _enc_varint_field(1, speed)
-        + _enc_varint_field(2, speed)
-        + (_enc_len(3, timeout_msg) if timeout_msg else _enc_len(3, b""))
+    timeout_secs = int(_time.time()) + (duration_minutes * 60) if duration_minutes > 0 else 0
+    # Int32_Indirect message: field 1 = timestamp value
+    indirect_msg = _enc_varint_field(1, timeout_secs)
+    trait_bytes = _enc_len(8, indirect_msg)
+    return encode_batch_update(
+        resource_id, "fan_control_settings",
+        "type.nestlabs.com/nest.trait.hvac.FanControlSettingsTrait",
+        trait_bytes,
     )
+
+
+def encode_set_fan(resource_id: str, fan_on: bool) -> bytes:
+    """Encode FanControlTrait to set current fan speed.
+    field 1 = current_speed: FanSpeedSetting (1=STAGE1/on, 4=OFF, 5=AUTO)
+    """
+    speed = 1 if fan_on else 4  # STAGE1=on, OFF=off
+    trait_bytes = _enc_varint_field(1, speed)
     return encode_batch_update(
         resource_id, "fan_control",
         "type.nestlabs.com/nest.trait.hvac.FanControlTrait",
